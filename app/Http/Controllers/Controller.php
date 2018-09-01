@@ -390,7 +390,7 @@ class Controller extends BaseController
         $admin_address = '0x4b5ae4567ad5d9fb92bc9afd6a657e6fa13a2523';
 
 
-        $hextoken = dechex($pay_data['token']);
+        $hextoken = str_pad(dechex($pay_data['token']), 2, '0', STR_PAD_LEFT);
 
         if ($member = DB::table("members")->where("name", $pay_data["name"])->get()->first()) {
                 //return $this->__out('ok', ['hash' => $result['result']['hash']], 404);
@@ -398,7 +398,7 @@ class Controller extends BaseController
             throw new Exception("该钱包用户不存在");
         }
 
-        $result = json_decode(shell_exec("cita-cli rpc sendRawTransaction --private-key " . $member->private . " --code 0x" . $incoming . " --address " . $admin_address . " --value 0x0" . $hextoken . " --url http://121.196.200.225:1337"), true);
+        $result = json_decode(shell_exec("cita-cli rpc sendRawTransaction --private-key " . $member->private . " --code 0x" . $incoming . " --address " . $admin_address . " --value 0x" . $hextoken . " --url http://121.196.200.225:1337"), true);
         if (is_array($result)) {
             if ($result['result']['status'] == 'OK') {
                 if ($member->token - $pay_data['token'] > 0) {
@@ -449,7 +449,7 @@ class Controller extends BaseController
         $incoming = bin2hex($incoming);
 
 
-        $hextoken = dechex($pay_data['token']);
+        $hextoken = str_pad(dechex($pay_data['token']), 2, '0', STR_PAD_LEFT);
 
         if ($member = DB::table("members")->where("name", $pay_data["name"])->get()->first()) {
                 //return $this->__out('ok', ['hash' => $result['result']['hash']], 404);
@@ -457,7 +457,7 @@ class Controller extends BaseController
             throw new Exception("该钱包用户不存在");
         }
 
-        $result = json_decode(shell_exec("cita-cli rpc sendRawTransaction --private-key 0x5f0258a4778057a8a7d97809bd209055b2fbafa654ce7d31ec7191066b9225e6 --code 0x" . $incoming . " --address " . $member->address . " --value 0x0" . $hextoken . " --url http://121.196.200.225:1337"), true);
+        $result = json_decode(shell_exec("cita-cli rpc sendRawTransaction --private-key 0x5f0258a4778057a8a7d97809bd209055b2fbafa654ce7d31ec7191066b9225e6 --code 0x" . $incoming . " --address " . $member->address . " --value 0x" . $hextoken . " --url http://121.196.200.225:1337"), true);
         if (is_array($result)) {
             if ($result['result']['status'] == 'OK') {
                 DB::table("members")->where("address", $member->address)->update([
