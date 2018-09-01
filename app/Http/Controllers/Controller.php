@@ -93,9 +93,8 @@ class Controller extends BaseController
                 //检测邮箱地址，正则
                 //if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                     if ($member = DB::table("members")->where("name", $name)->first()) {
-
                         //查看 token
-                        $result = json_decode(shell_exec('curl -X POST --data \'{"jsonrpc":"2.0","method":"getBalance", "params":["0x9480ac572b16f94a66758f110e5f10eaa42f621b", "latest"],"id":2}\' http://121.196.200.225:1337'), true);
+                        $result = json_decode(shell_exec('curl -X POST --data \'{"jsonrpc":"2.0","method":"getBalance", "params":["'.$member->address.'", "latest"],"id":2}\' http://121.196.200.225:1337'), true);
                         //$result = null;
                         if (is_array($result)) {
                             $token = hexdec($result['result']);
