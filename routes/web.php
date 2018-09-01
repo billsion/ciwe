@@ -35,7 +35,7 @@ $router->post('/api/member/register', 'Controller@register');
 //更新
 $router->put('/api/member/put[/{email}]', 'Controller@update');
 //查看
-$router->get('/api/member[/{email}]', 'Controller@show');
+$router->get('/api/member', 'Controller@show');
 //排名
 $router->get('/api/members', 'Controller@rank');
 //抓取聊天数据

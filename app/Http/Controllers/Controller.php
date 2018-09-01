@@ -82,16 +82,17 @@ class Controller extends BaseController
     /**
      * 查看详细
      *
-     * @param String $email
+     * @param Request $request
      * @return void
      */
-    function show(String $email = null)
+    function show(Request $request)
     {
+        $name = $request->input('name');
         try {
-            if (!is_null($email)) {
+            if (!is_null($name)) {
                 //检测邮箱地址，正则
-                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    if ($member = DB::table("members")->where("email", $email)->first()) {
+                //if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    if ($member = DB::table("members")->where("name", $name)->first()) {
 
                         //查看 token
                         $result = json_decode(shell_exec('curl -X POST --data \'{"jsonrpc":"2.0","method":"getBalance", "params":["0x9480ac572b16f94a66758f110e5f10eaa42f621b", "latest"],"id":2}\' http://121.196.200.225:1337'), true);
@@ -100,7 +101,7 @@ class Controller extends BaseController
                             $token = hexdec($result['result']);
                             //$token = 10;
                             if ($token > 0) {
-                                DB::table("members")->where("email", $email)->update([
+                                DB::table("members")->where("name", $name)->update([
                                     'token' => $token,
                                 ]);
                                 $member->token = $token;
@@ -110,13 +111,13 @@ class Controller extends BaseController
                             throw new Exception("公链调用中，请稍后再试");
                         }
                     } else {
-                        throw new Exception("查询不到对应的用户,请检查邮箱是否正确");
+                        throw new Exception("查询不到对应的用户,请检查用户名是否正确");
                     }
-                } else {
-                    throw new Exception("参数不合法，参数必须为一个合法的邮箱地址");
-                }
+                //} else {
+                    //throw new Exception("参数不合法，参数必须为一个合法的邮箱地址");
+                //}
             } else {
-                throw new Exception("参数不合法，参数必须为一个合法的邮箱地址");
+                throw new Exception("参数不合法，参数必须为微信昵称");
             }
         } catch (\Exception $e) {
             return $this->__out($e->getMessage(), [], 404);
